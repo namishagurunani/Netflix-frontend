@@ -1,4 +1,4 @@
-const baseurl = "https://netflix-05wh.onrender.com";
+const baseurl = "https://netflix-backend-1-asqx.onrender.com";
 export const API_END_POINT = `${baseurl}/api/v1/user`;
 
 export const options = {
