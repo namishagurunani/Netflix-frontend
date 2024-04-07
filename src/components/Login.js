@@ -33,13 +33,15 @@ const Login = () => {
           },
           withCredentials: true,
         });
-        if (res.data.success) {
+        if (res && res.data && res.data.success) { // Check if res and res.data are defined
           toast.success(res.data.message);
+          dispatch(setUser(res.data.user));
+          navigate("/browse");
+        } else {
+          toast.error("Login failed"); // Handle login failure gracefully
         }
-        dispatch(setUser(res.data.user));
-        navigate("/browse");
       } catch (error) {
-        toast.error(error.response.data.message);
+        toast.error(error.response ? error.response.data.message : "Login failed"); // Handle error gracefully
         console.log(error);
       } finally {
         dispatch(setLoading(false));
@@ -55,12 +57,14 @@ const Login = () => {
           },
           withCredentials: true,
         });
-        if (res.data.success) {
+        if (res && res.data && res.data.success) { // Check if res and res.data are defined
           toast.success(res.data.message);
+          setIsLogin(true);
+        } else {
+          toast.error("Registration failed"); // Handle registration failure gracefully
         }
-        setIsLogin(true);
       } catch (error) {
-        toast.error(error.response.data.message);
+        toast.error(error.response ? error.response.data.message : "Registration failed"); // Handle error gracefully
         console.log(error);
       } finally {
         dispatch(setLoading(false));
@@ -70,6 +74,7 @@ const Login = () => {
     setEmail("");
     setPassword("");
   };
+  
 
   return (
     <div>
