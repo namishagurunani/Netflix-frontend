@@ -23,6 +23,7 @@ const Login = () => {
   const getInputData = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));
+    
     try {
       if (isLogin) {
         // Login request
@@ -60,17 +61,17 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response) {
-        // Server responded with an error status code
-        toast.error(error.response.data.message);
+        // The request was made and the server responded with a status code
         console.log("Server Error:", error.response.status, error.response.data);
+        toast.error(`Server Error: ${error.response.status}. Please try again.`);
       } else if (error.request) {
-        // Request was made but no response received
-        toast.error("Network Error: Unable to reach the server.");
+        // The request was made but no response was received
         console.log("Network Error:", error.request);
+        toast.error("Network Error: Unable to reach the server. Please check your internet connection.");
       } else {
-        // Other errors
-        toast.error("An unexpected error occurred. Please try again later.");
+        // Something happened in setting up the request that triggered an error
         console.log("Error:", error.message);
+        toast.error("An unexpected error occurred. Please try again later.");
       }
     } finally {
       dispatch(setLoading(false));
@@ -80,6 +81,7 @@ const Login = () => {
     }
   };
   
+
   return (
     <div>
       <Header />
