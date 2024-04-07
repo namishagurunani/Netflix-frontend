@@ -23,59 +23,63 @@ const Login = () => {
   const getInputData = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));
-    if (isLogin) {
-      //login
-      const user = { email, password };
-      try {
+    try {
+      if (isLogin) {
+        // Login request
+        const user = { email, password };
         const res = await axios.post(`${API_END_POINT}/login`, user, {
           headers: {
             "Content-Type": "application/json",
           },
           withCredentials: true,
         });
-        if (res && res.data && res.data.success) { // Check if res and res.data are defined
+  
+        if (res.data.success) {
           toast.success(res.data.message);
           dispatch(setUser(res.data.user));
           navigate("/browse");
         } else {
-          toast.error("Login failed"); // Handle login failure gracefully
+          toast.error("Login failed. Please try again.");
         }
-      } catch (error) {
-        toast.error(error.response ? error.response.data.message : "Login failed"); // Handle error gracefully
-        console.log(error);
-      } finally {
-        dispatch(setLoading(false));
-      }
-    } else {
-      //register
-      dispatch(setLoading(true));
-      const user = { fullName, email, password };
-      try {
+      } else {
+        // Registration request
+        const user = { fullName, email, password };
         const res = await axios.post(`${API_END_POINT}/register`, user, {
           headers: {
             "Content-Type": "application/json",
           },
           withCredentials: true,
         });
-        if (res && res.data && res.data.success) { // Check if res and res.data are defined
+  
+        if (res.data.success) {
           toast.success(res.data.message);
           setIsLogin(true);
         } else {
-          toast.error("Registration failed"); // Handle registration failure gracefully
+          toast.error("Registration failed. Please try again.");
         }
-      } catch (error) {
-        toast.error(error.response ? error.response.data.message : "Registration failed"); // Handle error gracefully
-        console.log(error);
-      } finally {
-        dispatch(setLoading(false));
       }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with an error status code
+        toast.error(error.response.data.message);
+        console.log("Server Error:", error.response.status, error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        toast.error("Network Error: Unable to reach the server.");
+        console.log("Network Error:", error.request);
+      } else {
+        // Other errors
+        toast.error("An unexpected error occurred. Please try again later.");
+        console.log("Error:", error.message);
+      }
+    } finally {
+      dispatch(setLoading(false));
+      setFullName("");
+      setEmail("");
+      setPassword("");
     }
-    setFullName("");
-    setEmail("");
-    setPassword("");
   };
   
-
   return (
     <div>
       <Header />
